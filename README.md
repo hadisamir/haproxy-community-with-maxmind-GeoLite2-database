@@ -75,9 +75,14 @@ This Lua script is designed to be used with HAProxy to perform geolocation looku
 To use this Lua script in your HAProxy configuration, you would add a line in the frontend or backend definition to call the `lookup_geoip` action. For example:
 
 ```
+global
+    lua-load /usr/local/etc/haproxy/lua/geoip.lua
+
 frontend http-in
     bind *:80
-    tcp-request content lua.lookup_geoip
+    http-request lua.lookup_geoip
+    log-format "%ci - country: %[var(txn.geo_country)] City: %[var(txn.geo_city)] longitude: %[var(txn.geo_longitude)] latitude: %var(txn.geo_latitude)]"
+
     default_backend servers
 ```
 
